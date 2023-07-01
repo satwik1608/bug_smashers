@@ -19,7 +19,7 @@ for (let hour = 9; hour <= 18; hour++) {
 const interviewerSchema = new db.Schema({
     _id : {type : String,default : cuid},
     name : {type : String,required : true},
-    email : {type : String, required : true},
+    email : emailSchema(),
     type : {type : String,required : true},
     availableSlots : {type : Array,default : timeSlots},
     blockedSlots : {type : Array},
@@ -57,3 +57,23 @@ async function setUnavailable(email,timeSlot){
 
     return interviewer;
 }
+
+function emailSchema(opts = {}) {
+    return {
+      type: String,
+      required: true,
+      validate: [
+        {
+          validator: isEmail,
+          message: (props) => `${props.value} is not a valid email address`,
+        },
+        {
+          validator: function (email) {
+            return isUniqueEmail(this, email);
+          },
+          message: (props) => "Email is taken",
+        },
+      ],
+    };
+  }
+  
