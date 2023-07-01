@@ -5,7 +5,8 @@ module.exports = {
     create,
     getAll,
     getOne,
-    setUnavailable
+    setUnavailable,
+    setSlot
 }
 
 const timeSlots = [];
@@ -23,9 +24,9 @@ const interviewerSchema = new db.Schema({
     type : {type : String,required : true},
     availableSlots : {type : Array,default : timeSlots},
     blockedSlots : {type : Array},
-    interviewSlots : {type : Array},
     password : {type : String,required : true},
-    candidate : {type : String, ref : "Candidate"}
+    interviewSlots: [
+        {type : Object}],
 })
 
 const Interviewer = db.model("Interviewer", interviewerSchema);
@@ -39,7 +40,7 @@ async function create(fields) {
 }
 
 async function getAll() {
-    const data = await Interviewer.find();
+    const data = await Interviewer.find().populate();
     return data;
 }
 
@@ -53,15 +54,44 @@ async function setUnavailable(email,timeSlot){
     const interviewer = await Interviewer.findOne({email : email});
 
     interviewer.blockedSlots.push(timeSlot);
-    if(interviewer.availableSlots.find(timeSlot) !== undefined)
-        interviewer.availableSlots.remove(timeSlot);
-    if(interviewer.interviewSlotsSlots.find(timeSlot) !== undefined)
-        interviewer.interviewSlots.remove(timeSlot);
-
+    interviewer.availableSlots = interviewer.availableSlots.filter(i =>(i.start !== timeSlot.start || i.end != timeSlot.end));
+    interviewer.interviewSlots = interviewer.interviewSlots.filter(i =>(i.timeslot.start !== timeSlot.start || i.timeslot.end != timeSlot.end));
+    console.log(interviewer)
     await interviewer.save();
 
     return interviewer;
 }
+
+async function setSlot(email,timeSlot,candidateId){
+
+    console.log(email,timeSlot,candidateId);
+    const interviewer = await Interviewer.findOne({email : email});
+    
+
+    interviewer.availableSlots = interviewer.availableSlots.filter(i =>(i.start !== timeSlot.start || i.end != timeSlot.end));
+
+    const obj = {
+        timeSlot : timeSlot,
+        candidateId : candidateId
+    }
+    interviewer.interviewSlots.push(obj)
+
+
+    await interviewer.save();
+
+    return interviewer;
+    
+}
+async function get( email) {
+    const interviewer = await Interviewer.findOne({ email: email });
+    return interviewer;
+  }
+
+async function isUniqueEmail(doc, email) {
+    const existing = await get(email);
+    return !existing || doc._id === existing._id;
+  }
+  
 
 function emailSchema(opts = {}) {
     return {
