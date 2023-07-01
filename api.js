@@ -4,7 +4,9 @@ module.exports = {
     createInterviewer,
     getAllInterviewer,
     getInterviewerByEmail,
-    getAllCandidate
+    getAllCandidate,
+    fixInterview,
+    setSlotUnavailable
 }
 
 async function createInterviewer(req,res){
@@ -49,6 +51,30 @@ async function getAllCandidate(req,res){
     }
 }
 
+async function fixInterview(req,res){
+    try {   
+        const {email,timeSlot,candidateId} = req.body;
+        const data = await Interviewer.setSlot(email,timeSlot,candidateId);
+        res.json(data);
+    }
+    catch(err){
+        res.json(err);
+    }
+}
+
+async function setSlotUnavailable(req,res){
+    try{
+        const {email,timeSlot} = req.body;
+        console.log(email)
+
+        const data = await Interviewer.setUnavailable(email,timeSlot);
+
+        res.json(data);
+    }
+    catch (err){
+        res.json(err);
+    }
+}
 
 
 
