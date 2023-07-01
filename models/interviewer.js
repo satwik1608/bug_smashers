@@ -51,12 +51,17 @@ async function getOne(field) {
 }
 
 async function setUnavailable(email,timeSlot){
+   
     const interviewer = await Interviewer.findOne({email : email});
 
     interviewer.blockedSlots.push(timeSlot);
-    interviewer.availableSlots = interviewer.availableSlots.filter(i =>(i.start !== timeSlot.start || i.end != timeSlot.end));
-    interviewer.interviewSlots = interviewer.interviewSlots.filter(i =>(i.timeslot.start !== timeSlot.start || i.timeslot.end != timeSlot.end));
-    console.log(interviewer)
+  
+    
+  interviewer.availableSlots = interviewer.availableSlots.filter(i =>(i.start !== timeSlot.start || i.end != timeSlot.end));
+
+    interviewer.interviewSlots = interviewer.interviewSlots.filter(i =>(i.timeSlot.start !== timeSlot.start || i.timeSlot.end != timeSlot.end));
+
+
     await interviewer.save();
 
     return interviewer;

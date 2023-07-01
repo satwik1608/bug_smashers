@@ -50,8 +50,12 @@ async function create(){
       }
 }
 
-async function getAll(){
-    const data = await Candidate.find();
+async function getAll(interviewerType){
 
+
+    let data = await Candidate.find();
+   
+    if(interviewerType)
+      data = data.filter(d => (d.status[interviewerType] === 2));
     return data;
 }

@@ -43,7 +43,8 @@ async function getInterviewerByEmail(req,res){
 
 async function getAllCandidate(req,res){
     try {
-        const data = await Candidate.getAll();
+    
+        const data = await Candidate.getAll(req.query.type);
         res.json(data);
     }
     catch(err) {
@@ -65,7 +66,7 @@ async function fixInterview(req,res){
 async function setSlotUnavailable(req,res){
     try{
         const {email,timeSlot} = req.body;
-        console.log(email)
+        console.log(email,timeSlot)
 
         const data = await Interviewer.setUnavailable(email,timeSlot);
 
