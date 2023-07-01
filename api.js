@@ -1,9 +1,10 @@
 const Interviewer = require('./models/interviewer')
-
+const Candidate = require('./models/candidate')
 module.exports = {
     createInterviewer,
     getAllInterviewer,
-    getInterviewerByEmail
+    getInterviewerByEmail,
+    getAllCandidate
 }
 
 async function createInterviewer(req,res){
@@ -38,6 +39,15 @@ async function getInterviewerByEmail(req,res){
     }
 }
 
+async function getAllCandidate(req,res){
+    try {
+        const data = await Candidate.getAll();
+        res.json(data);
+    }
+    catch(err) {
+        res.json(err);
+    }
+}
 
 
 

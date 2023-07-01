@@ -25,6 +25,7 @@ const interviewerSchema = new db.Schema({
     blockedSlots : {type : Array},
     interviewSlots : {type : Array},
     password : {type : String,required : true},
+    candidate : {type : String, ref : "Candidate"}
 })
 
 const Interviewer = db.model("Interviewer", interviewerSchema);
@@ -52,7 +53,11 @@ async function setUnavailable(email,timeSlot){
     const interviewer = await Interviewer.findOne({email : email});
 
     interviewer.blockedSlots.push(timeSlot);
-    interviewer.availableSlots.remove(timeSlot);
+    if(interviewer.availableSlots.find(timeSlot) !== undefined)
+        interviewer.availableSlots.remove(timeSlot);
+    if(interviewer.interviewSlotsSlots.find(timeSlot) !== undefined)
+        interviewer.interviewSlots.remove(timeSlot);
+
     await interviewer.save();
 
     return interviewer;
