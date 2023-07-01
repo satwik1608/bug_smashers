@@ -26,6 +26,7 @@ async function getAllInterviewer(req,res){
         res.json(err)
     }
 }
+
 async function getInterviewerByEmail(req,res){
     try{
         const { email } = req.body;
