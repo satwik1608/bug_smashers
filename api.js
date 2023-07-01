@@ -10,7 +10,7 @@ async function createInterviewer(req,res){
     try{
         const data = await Interviewer.create(req.body);
 
-        res.json(data);
+        res.status(200).json(data);
     }
     catch(err) {
         res.json(err)
@@ -20,7 +20,7 @@ async function createInterviewer(req,res){
 async function getAllInterviewer(req,res){
     try{
         const data =  await Interviewer.getAll();
-        res.json(data);
+        res.status(200).json(data);
     }
     catch (err){
         res.json(err)
@@ -31,7 +31,7 @@ async function getInterviewerByEmail(req,res){
     try{
         const { email } = req.body;
         const data = await Interviewer.getOne(email);
-        res.json(data);
+        res.status(200).json(data);
     }
     catch(err){
         res.json(err);
