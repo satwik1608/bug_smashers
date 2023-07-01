@@ -12,7 +12,7 @@ async function createInterviewer(req,res){
 
         res.json(data);
     }
-    catch {
+    catch(err) {
         res.json(err)
     }
     
