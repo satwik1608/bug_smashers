@@ -4,7 +4,8 @@ const cuid = require('cuid')
 module.exports = {
     create,
     getAll,
-    getOne
+    getOne,
+    setUnavailable
 }
 
 const timeSlots = [];
@@ -22,6 +23,7 @@ const interviewerSchema = new db.Schema({
     type : {type : String,required : true},
     availableSlots : {type : Array,default : timeSlots},
     blockedSlots : {type : Array},
+    interviewSlots : {type : Array},
     password : {type : String,required : true},
 })
 
@@ -46,3 +48,12 @@ async function getOne(field) {
     return data;
 }
 
+async function setUnavailable(email,timeSlot){
+    const interviewer = await Interviewer.findOne({email : email});
+
+    interviewer.blockedSlots.push(timeSlot);
+    interviewer.availableSlots.remove(timeSlot);
+    await interviewer.save();
+
+    return interviewer;
+}
