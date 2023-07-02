@@ -9,7 +9,8 @@ module.exports = {
     setUnavailable,
     setSlot,
     acceptInvitation,
-    rejectInvitation
+    rejectInvitation,
+    candidateResult
 }
 
 const timeSlots = [];
@@ -50,15 +51,27 @@ async function create(fields) {
 }
 
 async function getAll() {
-    const data = await Interviewer.find().populate();
+    const data = await Interviewer.find();
+
     return data;
 }
 
 async function getOne(field) {
-    const data = await Interviewer.findOne({email : field}).populate({
-      path : "interviewSlots",
-      select : {"candidateId" : 1}
-    }).exec()
+    const data = await Interviewer.findOne({email : field});
+
+    const slots = data.interviewSlots;
+      for(let j = 0;j<slots.length;++j){
+        const cId = slots[j].candidateId;
+        const candidate = await Candidate.getOne(cId);
+        const obj = {
+          id : candidate._id,
+          name : candidate.name
+        }
+        console.log(obj)
+        data.interviewSlots[j].candidateId = obj;
+      }
+
+    await data.save();
     return data;
 }
 
@@ -109,12 +122,14 @@ async function rejectInvitation(email,timeSlot){
 
   interviewer.blockedSlots.push(timeSlot)
 
-  
+             
 
   interviewer.notify = interviewer.notify - 1;
   await interviewer.save();
   return interviewer;
 }
+
+
 
 async function setSlot(email,timeSlot,candidateId){
 
@@ -140,6 +155,34 @@ async function setSlot(email,timeSlot,candidateId){
 
     return interviewer;
     
+}
+
+async function candidateResult(email,timeSlot,verdict){
+  const interviewer = await Interviewer.findOne({email : email});
+
+
+  let cId;
+    for (let i = 0;i<interviewer.interviewSlots.length;++i){
+      if(interviewer.interviewSlots[i].timeSlot.start == timeSlot.start && interviewer.interviewSlots[i].timeSlot.end === timeSlot.end){
+        cId = interviewer.interviewSlots[i].candidateId;
+        break;
+      }
+    }
+    const candidate = await Candidate.getOne(cId);
+    console.log(candidate)
+    candidate.nextInterview = {};
+    const interviewType = interviewer.type;
+    console.log(interviewType)
+    if(verdict === 'pass')
+      candidate.status[interviewType] = 1;
+    else
+      candidate.status[interviewType] = 0;
+
+    await candidate.save();
+    await interviewer.save();
+    
+    return candidate;
+
 }
 async function get( email) {
     const interviewer = await Interviewer.findOne({ email: email });

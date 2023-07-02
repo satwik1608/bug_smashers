@@ -19,8 +19,9 @@ app.post('/interviewer/makeSlotBusy',api.setSlotUnavailable);
 app.post('/interviewer/accept',api.acceptInvitation);
 app.post('/interviewer/reject', api.rejectInvitation);
 
-app.get('/candidate/getAll/',api.getAllCandidate)
+app.get('/candidate/getAll/',api.getAllCandidate);
 
+app.post('/interviewer/verdict',api.candidateVerdict);
 
 
 app.use(middleware.handleValidationError);

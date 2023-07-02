@@ -8,7 +8,8 @@ module.exports = {
     fixInterview,
     setSlotUnavailable,
     acceptInvitation,
-    rejectInvitation
+    rejectInvitation,
+    candidateVerdict
 
 }
 
@@ -104,4 +105,16 @@ async function rejectInvitation(req,res){
     }
 }
 
+async function candidateVerdict(req ,res){
+    try {
+        const { email,timeSlot,verdict} = req.body;
+
+        const data = await Interviewer.candidateResult(email,timeSlot,verdict);
+
+        res.json(data);
+    }
+    catch(err){
+        res.json(err);
+    }
+}
 
