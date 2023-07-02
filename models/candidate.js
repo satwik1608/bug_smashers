@@ -7,7 +7,7 @@ module.exports = {
     getAll
 }
 
-const defStatus = {
+let defStatus = {
     "TECH" : 2,
     "HR" : 2,
     "MANAGER": 2
@@ -22,6 +22,7 @@ const candidateSchema = new db.Schema({
 const Candidate = db.model("Candidate",candidateSchema);
 
 async function create(){
+  
     function generateRandomName() {
         const names = ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack',
                        'Katherine', 'Leo', 'Mia', 'Noah', 'Olivia', 'Patrick', 'Quinn', 'Ruby', 'Samuel', 'Tara',

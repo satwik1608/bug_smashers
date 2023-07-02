@@ -169,19 +169,29 @@ async function candidateResult(email,timeSlot,verdict){
       }
     }
     const candidate = await Candidate.getOne(cId);
-    console.log(candidate)
     candidate.nextInterview = {};
     const interviewType = interviewer.type;
-    console.log(interviewType)
-    if(verdict === 'pass')
-      candidate.status[interviewType] = 1;
-    else
-      candidate.status[interviewType] = 0;
+    let obj = {
+      HR : candidate.status["HR"],
+      TECH : candidate.status["TECH"],
+      MANAGER : candidate.status["MANAGER"],
+
+    }
+  
+    if(verdict === 'pass'){
+      obj[interviewType] = 1;
+    }
+    else{
+      obj[interviewType] = 0;
+    }
+
+
+    candidate.status = obj;
 
     await candidate.save();
     await interviewer.save();
     
-    return candidate;
+    return interviewer;
 
 }
 async function get( email) {
