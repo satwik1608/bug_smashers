@@ -36,7 +36,7 @@ const interviewerSchema = new db.Schema({
         type: String,
         ref: "Candidate", 
       },],
-      notify : {type : Boolean,default : false}
+      notify : {type : Number,default : 0}
 })
 
 const Interviewer = db.model("Interviewer", interviewerSchema);
@@ -81,7 +81,7 @@ async function setUnavailable(email,timeSlot){
 async function acceptInvitation(email,timeSlot){
   const interviewer = await Interviewer.findOne({email : email});
 
-  interviewer.notify = false;
+  interviewer.notify = interviewer.notify - 1;
 
   await interviewer.save();
   return interviewer;
@@ -92,11 +92,14 @@ async function rejectInvitation(email,timeSlot){
 
   const interviewer = await Interviewer.findOne({email : email});
 
-  interviewer.notify = false;
+  
 
   interviewer.interviewSlots = interviewer.interviewSlots.filter(i => (i.timeSlot.start !== timeSlot.start || i.timeSlot.end !== timeSlot.end));
 
   interviewer.blockedSlots.push(timeSlot)
+
+ 
+  interviewer.notify = interviewer.notify - 1;
   await interviewer.save();
   return interviewer;
 }
@@ -114,7 +117,7 @@ async function setSlot(email,timeSlot,candidateId){
         candidateId : candidateId
     }
     interviewer.interviewSlots.push(obj)
-    interviewer.notify = true;
+    interviewer.notify = interviewer.notify + 1
 
     await interviewer.save();
 
