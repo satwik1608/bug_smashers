@@ -23,7 +23,6 @@ app.get('/candidate/getAll/',api.getAllCandidate)
 
 
 
-
 app.use(middleware.handleValidationError);
 app.use(middleware.handleError);
 app.use(middleware.notFound);

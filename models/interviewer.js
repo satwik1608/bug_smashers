@@ -92,13 +92,25 @@ async function rejectInvitation(email,timeSlot){
 
   const interviewer = await Interviewer.findOne({email : email});
 
-  
+  let cId;
+    for (let i = 0;i<interviewer.interviewSlots.length;++i){
+      if(interviewer.interviewSlots[i].timeSlot.start == timeSlot.start && interviewer.interviewSlots[i].timeSlot.end === timeSlot.end){
+        cId = interviewer.interviewSlots[i].candidateId;
+        break;
+      }
+    }
+    const candidate = await Candidate.getOne(cId);
+
+    candidate.nextInterview = {};
+
+    await candidate.save();
 
   interviewer.interviewSlots = interviewer.interviewSlots.filter(i => (i.timeSlot.start !== timeSlot.start || i.timeSlot.end !== timeSlot.end));
 
   interviewer.blockedSlots.push(timeSlot)
 
- 
+  
+
   interviewer.notify = interviewer.notify - 1;
   await interviewer.save();
   return interviewer;
@@ -108,7 +120,7 @@ async function setSlot(email,timeSlot,candidateId){
 
     console.log(email,timeSlot,candidateId);
     const interviewer = await Interviewer.findOne({email : email});
-    
+
 
     interviewer.availableSlots = interviewer.availableSlots.filter(i =>(i.start !== timeSlot.start || i.end != timeSlot.end));
 
@@ -117,8 +129,13 @@ async function setSlot(email,timeSlot,candidateId){
         candidateId : candidateId
     }
     interviewer.interviewSlots.push(obj)
-    interviewer.notify = interviewer.notify + 1
+    interviewer.notify = interviewer.notify + 1;
 
+    let candidate = await Candidate.getOne(candidateId);
+
+    candidate.nextInterview = timeSlot;
+
+    await candidate.save();
     await interviewer.save();
 
     return interviewer;
