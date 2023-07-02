@@ -1,5 +1,6 @@
 const db = require('../db');
 const cuid = require('cuid')
+
 module.exports = {
     create,
     getAll

@@ -16,6 +16,9 @@ app.post('/interviewer/getOne',api.getInterviewerByEmail);
 app.post('/interviewer/fixInterview',api.fixInterview);
 app.post('/interviewer/makeSlotBusy',api.setSlotUnavailable);
 
+app.post('/interviewer/accept',api.acceptInvitation);
+app.post('/interviewer/reject', api.rejectInvitation);
+
 app.get('/candidate/getAll/',api.getAllCandidate)
 
 

@@ -1,12 +1,15 @@
 const db = require('../db')
 const {isEmail} = require('validator')
 const cuid = require('cuid')
+const Candidate = require('./candidate')
 module.exports = {
     create,
     getAll,
     getOne,
     setUnavailable,
-    setSlot
+    setSlot,
+    acceptInvitation,
+    rejectInvitation
 }
 
 const timeSlots = [];
@@ -26,7 +29,14 @@ const interviewerSchema = new db.Schema({
     blockedSlots : {type : Array},
     password : {type : String,required : true},
     interviewSlots: [
-        {type : Object}],
+      {
+        type: Object,
+      },
+      {
+        type: String,
+        ref: "Candidate", 
+      },],
+      notify : {type : Boolean,default : false}
 })
 
 const Interviewer = db.model("Interviewer", interviewerSchema);
@@ -45,8 +55,10 @@ async function getAll() {
 }
 
 async function getOne(field) {
-    const data = await Interviewer.findOne({email : field})
-    
+    const data = await Interviewer.findOne({email : field}).populate({
+      path : "interviewSlots",
+      select : {"candidateId" : 1}
+    }).exec()
     return data;
 }
 
@@ -61,10 +73,32 @@ async function setUnavailable(email,timeSlot){
 
     interviewer.interviewSlots = interviewer.interviewSlots.filter(i =>(i.timeSlot.start !== timeSlot.start || i.timeSlot.end != timeSlot.end));
 
-
     await interviewer.save();
 
     return interviewer;
+}
+
+async function acceptInvitation(email,timeSlot){
+  const interviewer = await Interviewer.findOne({email : email});
+
+  interviewer.notify = false;
+
+  await interviewer.save();
+  return interviewer;
+
+}
+
+async function rejectInvitation(email,timeSlot){
+
+  const interviewer = await Interviewer.findOne({email : email});
+
+  interviewer.notify = false;
+
+  interviewer.interviewSlots = interviewer.interviewSlots.filter(i => (i.timeSlot.start !== timeSlot.start || i.timeSlot.end !== timeSlot.end));
+
+  interviewer.blockedSlots.push(timeSlot)
+  await interviewer.save();
+  return interviewer;
 }
 
 async function setSlot(email,timeSlot,candidateId){
@@ -80,7 +114,7 @@ async function setSlot(email,timeSlot,candidateId){
         candidateId : candidateId
     }
     interviewer.interviewSlots.push(obj)
-
+    interviewer.notify = true;
 
     await interviewer.save();
 

@@ -6,7 +6,10 @@ module.exports = {
     getInterviewerByEmail,
     getAllCandidate,
     fixInterview,
-    setSlotUnavailable
+    setSlotUnavailable,
+    acceptInvitation,
+    rejectInvitation
+
 }
 
 async function createInterviewer(req,res){
@@ -77,6 +80,28 @@ async function setSlotUnavailable(req,res){
     }
 }
 
+async function acceptInvitation(req,res){
+    try {
+        const { email , timeSlot}  = req.body;
 
+        const data = await Interviewer.acceptInvitation(email,timeSlot);
+        res.json(data);
+    }   
+    catch(err){
+        res.json(err);
+    }
+}
+
+async function rejectInvitation(req,res){
+    try {
+        const { email , timeSlot}  = req.body;
+
+        const data = await Interviewer.rejectInvitation(email,timeSlot);
+        res.json(data);
+    }   
+    catch(err){
+        res.json(err);
+    }
+}
 
 
