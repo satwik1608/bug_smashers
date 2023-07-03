@@ -184,7 +184,9 @@ async function candidateResult(email,timeSlot,verdict){
       obj[interviewType] = 1;
     }
     else{
-      obj[interviewType] = 0;
+      obj["HR"] = 0;
+      obj["TECH"] = 0;
+      obj["MANAGER"] = 0;
     }
 
 
