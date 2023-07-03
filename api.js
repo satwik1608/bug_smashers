@@ -49,7 +49,7 @@ async function getInterviewerByEmail(req,res){
 async function getAllCandidate(req,res){
     try {
 
-        const data = await Candidate.getAll(req.query.type,req.query.selected);
+        const data = await Candidate.getAll(req.query.type,req.query.all);
         res.json(data);
     }
     catch(err) {

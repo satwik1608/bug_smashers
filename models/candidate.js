@@ -61,7 +61,7 @@ async function getAll(interviewerType,all){
 
 
     let data = await Candidate.find();
-   
+    console.log(interviewerType,all)
     if(interviewerType)
       data = data.filter(d => (d.status[interviewerType] === 2));
     
