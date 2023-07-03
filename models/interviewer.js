@@ -256,7 +256,7 @@ async function recommend(currentTime){
       timeSlot : chosenSlot,
       candidateId: candidate._id
     })
-
+    interviewers[chosenInterviewer].notify = interviewers[chosenInterviewer].notify + 1;
     // removing from available slots
     interviewers[chosenInterviewer].availableSlots = interviewers[chosenInterviewer].availableSlots.filter(i =>(i.start !== chosenSlot.start || i.end != chosenSlot.end));
     console.log(chosenSlot);
