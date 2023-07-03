@@ -45,7 +45,7 @@ async function create(){
         MANAGER: 2,
       };
       
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 20; i++) {
         const name = generateRandomName();
 
         const obj = {

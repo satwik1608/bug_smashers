@@ -187,6 +187,8 @@ async function candidateResult(email,timeSlot,verdict){
       obj["HR"] = 0;
       obj["TECH"] = 0;
       obj["MANAGER"] = 0;
+
+      interviewer.blockedSlots.push(timeSlot)
     }
 
 
