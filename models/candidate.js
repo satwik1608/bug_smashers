@@ -79,23 +79,21 @@ async function getOne(candidateId){
 
 async function upload(candidates){
 
-
-
-  for(const candidate of candidates){
+  for(const candidate of candidates.candidates){
 
     const status = {
       TECH: 2,
       HR: 2,
       MANAGER: 2,
     };
-
+   
     const obj = {
       name : candidate.name,
       status : status,
     }
 
     const c = new Candidate(obj);
-    
+
     await c.save();
   }
 

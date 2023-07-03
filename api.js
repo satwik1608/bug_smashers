@@ -138,8 +138,8 @@ async function smartFunction(req,res){
 
 async function uploadCandidates(req,res){
     try{
-        const { name } = req.body;
-        await Candidate.upload(name);
+    
+        await Candidate.upload({candidates : req.body});
 
         res.json("success");
     }
