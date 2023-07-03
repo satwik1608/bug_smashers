@@ -258,7 +258,7 @@ async function recommend(currentTime){
     console.log(chosenSlot);
     console.log(interviewers[chosenInterviewer].availableSlots);
     // updating the candidates
-
+    candidates[index].nextInterview = chosenSlot;
     ++ index;
   }
   console.log('wowo')

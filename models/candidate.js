@@ -57,7 +57,7 @@ async function create(){
       }
 }
 
-async function getAll(interviewerType){
+async function getAll(interviewerType,all){
 
 
     let data = await Candidate.find();
@@ -65,7 +65,8 @@ async function getAll(interviewerType){
     if(interviewerType)
       data = data.filter(d => (d.status[interviewerType] === 2));
     
-    data = data.filter(d => (Object.keys(d.nextInterview).length === 0));
+    if(all)
+      data = data.filter(d => (Object.keys(d.nextInterview).length === 0));
     return data;
 }
 

@@ -48,8 +48,8 @@ async function getInterviewerByEmail(req,res){
 
 async function getAllCandidate(req,res){
     try {
-    
-        const data = await Candidate.getAll(req.query.type);
+
+        const data = await Candidate.getAll(req.query.type,req.query.selected);
         res.json(data);
     }
     catch(err) {
