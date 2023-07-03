@@ -178,7 +178,8 @@ async function candidateResult(email,timeSlot,verdict){
       MANAGER : candidate.status["MANAGER"],
 
     }
-  
+    candidate.previousInterview = timeSlot.start;
+    
     if(verdict === 'pass'){
       obj[interviewType] = 1;
     }
