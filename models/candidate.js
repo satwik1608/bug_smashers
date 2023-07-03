@@ -95,7 +95,7 @@ async function upload(candidates){
     }
 
     const c = new Candidate(obj);
-
+    
     await c.save();
   }
 
