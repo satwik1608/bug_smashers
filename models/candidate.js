@@ -82,7 +82,19 @@ async function upload(candidates){
 
 
   for(const candidate of candidates){
-    const c = new Candidate(candidate);
+
+    const status = {
+      TECH: 2,
+      HR: 2,
+      MANAGER: 2,
+    };
+
+    const obj = {
+      name : candidate.name,
+      status : status,
+    }
+
+    const c = new Candidate(obj);
 
     await c.save();
   }
