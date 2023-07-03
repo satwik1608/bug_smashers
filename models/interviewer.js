@@ -204,7 +204,7 @@ async function recommend(currentTime){
   // fetching the data and assigning to local database
   let interviewers = await Interviewer.find();
 
-  let candidates = await Candidate.getAll();
+  let candidates = await Candidate.getAll(null,true);
 
   // sorting the candidates on the basis of  last interview done
 

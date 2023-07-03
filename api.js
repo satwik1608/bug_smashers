@@ -10,7 +10,8 @@ module.exports = {
     acceptInvitation,
     rejectInvitation,
     candidateVerdict,
-    smartFunction
+    smartFunction,
+    uploadCandidates
 
 }
 
@@ -132,5 +133,16 @@ async function smartFunction(req,res){
     }
     catch(err){
         res.json(err);
+    }
+}
+
+async function uploadCandidates(req,res){
+    try{
+        await Candidate.upload();
+
+        res.json("success");
+    }
+    catch(err){
+        res.json(err)
     }
 }

@@ -4,7 +4,8 @@ const cuid = require('cuid')
 module.exports = {
     create,
     getOne,
-    getAll
+    getAll,
+    upload
 }
 
 let defStatus = {
@@ -74,4 +75,15 @@ async function getOne(candidateId){
   let data = await Candidate.findById(candidateId);
 
   return data;
+}
+
+async function upload(candidates){
+
+  for(const candidate of candidates){
+    const c = new Candidate(candidate);
+
+    await c.save();
+  }
+
+
 }
