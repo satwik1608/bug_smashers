@@ -79,13 +79,13 @@ async function getOne(candidateId){
 
 async function upload(candidates){
 
-  console.log(candidates);
 
-  // for(const candidate of candidates){
-  //   const c = new Candidate(candidate);
 
-  //   await c.save();
-  // }
+  for(const candidate of candidates){
+    const c = new Candidate(candidate);
+
+    await c.save();
+  }
 
 
 }
