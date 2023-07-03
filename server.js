@@ -20,7 +20,7 @@ app.post('/interviewer/accept',api.acceptInvitation);
 app.post('/interviewer/reject', api.rejectInvitation);
 
 app.get('/candidate/getAll/',api.getAllCandidate);
-app.get('/candidate/uplodad',api.uploadCandidates)
+app.post('/candidate/uplodad',api.uploadCandidates)
 app.post('/interviewer/smartfill',api.smartFunction)
 app.post('/interviewer/verdict',api.candidateVerdict);
 
