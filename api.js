@@ -9,7 +9,8 @@ module.exports = {
     setSlotUnavailable,
     acceptInvitation,
     rejectInvitation,
-    candidateVerdict
+    candidateVerdict,
+    smartFunction
 
 }
 
@@ -118,3 +119,18 @@ async function candidateVerdict(req ,res){
     }
 }
 
+
+async function smartFunction(req,res){
+    try {
+        const {currentTime} = req.body;
+
+        await Interviewer.recommend(currentTime);
+        console.log('DONEEE --------------------------------------')
+        res.json('success');
+
+
+    }
+    catch(err){
+        res.json(err);
+    }
+}

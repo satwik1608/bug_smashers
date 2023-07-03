@@ -16,7 +16,8 @@ const candidateSchema = new db.Schema({
     _id: {type : String,default: cuid},
     name : {type : String,required:true},
     status : {type : Object , default : defStatus},
-    nextInterview : {type : Object,default : {}}
+    nextInterview : {type : Object,default : {}},
+    previousInterview:  {type : Number,default : 0}
 })
 
 const Candidate = db.model("Candidate",candidateSchema);

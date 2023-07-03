@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
 const api = require('./api')
-
+const Candidate= require('./models/candidate')
 const middleware = require('./middleware');
 app.use(middleware.cors)
 
@@ -20,7 +20,7 @@ app.post('/interviewer/accept',api.acceptInvitation);
 app.post('/interviewer/reject', api.rejectInvitation);
 
 app.get('/candidate/getAll/',api.getAllCandidate);
-
+app.post('/interviewer/smartfill',api.smartFunction)
 app.post('/interviewer/verdict',api.candidateVerdict);
 
 

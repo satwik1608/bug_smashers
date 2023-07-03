@@ -10,7 +10,8 @@ module.exports = {
     setSlot,
     acceptInvitation,
     rejectInvitation,
-    candidateResult
+    candidateResult,
+    recommend   
 }
 
 const timeSlots = [];
@@ -192,6 +193,82 @@ async function candidateResult(email,timeSlot,verdict){
     await interviewer.save();
     
     return interviewer;
+
+}
+
+async function recommend(currentTime){
+    
+  // fetching the data and assigning to local database
+  let interviewers = await Interviewer.find();
+
+  let candidates = await Candidate.getAll();
+
+  // sorting the candidates on the basis of  last interview done
+
+  candidates.sort((c1,c2) => (c1.previousInterview - c2.previousInterview))
+  
+
+  let interSize = candidates.length;
+  let size = interviewers.length;
+  let index = 0;
+  // Now checking for every candidate and getting him the interviewer
+  while( index <interSize){
+    console.log(index)
+    let candidate = candidates[index];
+    let chosenInterviewer = -1;
+    let bestSlot = 100;
+    for(let j = 0;j < size; ++ j){
+      let interviewer = interviewers[j];
+
+      let interviewerType = interviewer.type;
+      // If that candidate has that interview not yet scheduled.
+      console.log(interviewer.availableSlots)
+      if(candidate.status[interviewerType] === 2 && interviewer.availableSlots.length > 0){
+        
+        for(let k = 0;k<interviewer.availableSlots.length;++k){
+          
+          if(interviewer.availableSlots[k].start >= currentTime){
+            if(bestSlot > interviewer.availableSlots[k].start ){
+              bestSlot = interviewer.availableSlots[k].start;
+              chosenInterviewer = j;
+            }
+          }
+        }
+      }
+    }
+    if(chosenInterviewer === -1) {
+      ++index;
+      continue;
+    }
+    console.log(candidate.name , interviewers[chosenInterviewer].name)
+    const chosenSlot = {
+      "start" : bestSlot,
+      "end" : bestSlot + 1
+    }
+    
+    // adding time slot to interview slots
+    interviewers[chosenInterviewer].interviewSlots.push({
+      timeSlot : chosenSlot,
+      candidateId: candidate._id
+    })
+
+    // removing from available slots
+    interviewers[chosenInterviewer].availableSlots = interviewers[chosenInterviewer].availableSlots.filter(i =>(i.start !== chosenSlot.start || i.end != chosenSlot.end));
+    console.log(chosenSlot);
+    console.log(interviewers[chosenInterviewer].availableSlots);
+    // updating the candidates
+
+    ++ index;
+  }
+  console.log('wowo')
+  for (const candidate of candidates) {
+    await candidate.save();
+  }
+  for (const interviewer of interviewers) {
+    await interviewer.save();
+  }
+
+  console.log('gre')
 
 }
 async function get( email) {
