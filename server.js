@@ -5,6 +5,7 @@ const api = require("./api");
 const middleware = require("./middleware");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const Candidate = require("./models/candidate");
 app.use(cors());
 const auth = require("./auth");
 console.log("auth ", auth);

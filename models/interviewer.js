@@ -195,8 +195,6 @@ async function candidateResult(email, timeSlot, verdict) {
     obj["HR"] = 0;
     obj["TECH"] = 0;
     obj["MANAGER"] = 0;
-
-    interviewer.blockedSlots.push(timeSlot);
   }
 
   candidate.status = obj;
@@ -222,7 +220,7 @@ async function recommend(currentTime) {
   let index = 0;
   // Now checking for every candidate and getting him the interviewer
   while (index < interSize) {
-    console.log(index);
+    // console.log(index);
     let candidate = candidates[index];
     let chosenInterviewer = -1;
     let bestSlot = 100;
@@ -231,7 +229,7 @@ async function recommend(currentTime) {
 
       let interviewerType = interviewer.type;
       // If that candidate has that interview not yet scheduled.
-      console.log(interviewer.availableSlots);
+      // console.log(interviewer.availableSlots);
       if (
         candidate.status[interviewerType] === 2 &&
         interviewer.availableSlots.length > 0
@@ -250,7 +248,7 @@ async function recommend(currentTime) {
       ++index;
       continue;
     }
-    console.log(candidate.name, interviewers[chosenInterviewer].name);
+    // console.log(candidate.name, interviewers[chosenInterviewer].name);
     const chosenSlot = {
       start: bestSlot,
       end: bestSlot + 1,
@@ -269,13 +267,13 @@ async function recommend(currentTime) {
     ].availableSlots.filter(
       (i) => i.start !== chosenSlot.start || i.end != chosenSlot.end
     );
-    console.log(chosenSlot);
-    console.log(interviewers[chosenInterviewer].availableSlots);
+    // console.log(chosenSlot);
+    // console.log(interviewers[chosenInterviewer].availableSlots);
     // updating the candidates
     candidates[index].nextInterview = chosenSlot;
     ++index;
   }
-  console.log("wowo");
+  // console.log("wowo");
   for (const candidate of candidates) {
     await candidate.save();
   }
@@ -284,6 +282,7 @@ async function recommend(currentTime) {
   }
 
   console.log("gre");
+  return interviewers;
 }
 async function get(email) {
   const interviewer = await Interviewer.findOne({ email: email });
