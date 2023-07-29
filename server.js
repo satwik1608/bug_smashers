@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const api = require("./api");
 const middleware = require("./middleware");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+app.use(cors());
 const auth = require("./auth");
 console.log("auth ", auth);
 app.use(middleware.cors);
@@ -11,7 +13,7 @@ app.use(middleware.cors);
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.post("/login", auth.authenticate, auth.login);
+app.post("/login", auth.login);
 
 app.post("/interviewer/create", api.createInterviewer);
 app.get("/interviewer/getAll", api.getAllInterviewer);
