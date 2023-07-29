@@ -39,8 +39,22 @@ const interviewerSchema = new db.Schema({
       type: String,
       ref: "Candidate",
     },
+    {
+      type: String,
+    },
   ],
-  notify: { type: Number, default: 0 },
+  interviewDoneSlots: [
+    {
+      type: Object,
+    },
+    {
+      type: String,
+      ref: "Candidate",
+    },
+    {
+      type: String,
+    },
+  ],
 });
 
 const Interviewer = db.model("Interviewer", interviewerSchema);
@@ -104,7 +118,20 @@ async function setUnavailable(email, timeSlot) {
 async function acceptInvitation(email, timeSlot) {
   const interviewer = await Interviewer.findOne({ email: email });
 
-  interviewer.notify = interviewer.notify - 1;
+  for (let i = 0; i < interviewer.interviewSlots.length; ++i) {
+    if (
+      interviewer.interviewSlots[i].timeSlot.start == timeSlot.start &&
+      interviewer.interviewSlots[i].timeSlot.end === timeSlot.end
+    ) {
+      const obj = {
+        timeSlot: timeSlot,
+        candidateId: interviewer.interviewSlots[i].candidateId,
+        notify: 1,
+      };
+      interviewer.interviewSlots[i] = obj;
+      break;
+    }
+  }
 
   await interviewer.save();
   return interviewer;
@@ -119,6 +146,12 @@ async function rejectInvitation(email, timeSlot) {
       interviewer.interviewSlots[i].timeSlot.start == timeSlot.start &&
       interviewer.interviewSlots[i].timeSlot.end === timeSlot.end
     ) {
+      const obj = {
+        timeSlot: timeSlot,
+        candidateId: interviewer.interviewSlots[i].candidateId,
+        notify: 1,
+      };
+      interviewer.interviewSlots[i] = obj;
       cId = interviewer.interviewSlots[i].candidateId;
       break;
     }
@@ -136,7 +169,6 @@ async function rejectInvitation(email, timeSlot) {
 
   interviewer.blockedSlots.push(timeSlot);
 
-  interviewer.notify = interviewer.notify - 1;
   await interviewer.save();
   return interviewer;
 }
@@ -152,9 +184,9 @@ async function setSlot(email, timeSlot, candidateId) {
   const obj = {
     timeSlot: timeSlot,
     candidateId: candidateId,
+    notify: 0,
   };
   interviewer.interviewSlots.push(obj);
-  interviewer.notify = interviewer.notify + 1;
 
   let candidate = await Candidate.getOne(candidateId);
 
@@ -196,6 +228,17 @@ async function candidateResult(email, timeSlot, verdict) {
     obj["TECH"] = 0;
     obj["MANAGER"] = 0;
   }
+
+  interviewer.interviewSlots = interviewer.interviewSlots.filter(
+    (i) => i.timeSlot.start !== timeSlot.start || i.timeSlot.end != timeSlot.end
+  );
+
+  const obj2 = {
+    email: email,
+    timeSlot: timeSlot,
+    verdict: verdict,
+  };
+  interviewer.interviewDoneSlots.push(obj2);
 
   candidate.status = obj;
 
@@ -258,9 +301,8 @@ async function recommend(currentTime) {
     interviewers[chosenInterviewer].interviewSlots.push({
       timeSlot: chosenSlot,
       candidateId: candidate._id,
+      notify: 0,
     });
-    interviewers[chosenInterviewer].notify =
-      interviewers[chosenInterviewer].notify + 1;
     // removing from available slots
     interviewers[chosenInterviewer].availableSlots = interviewers[
       chosenInterviewer
